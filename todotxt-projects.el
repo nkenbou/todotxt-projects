@@ -55,13 +55,14 @@
 ;;;###autoload
 (defun todotxt-switch ()
   (interactive)
-  (let ((win (selected-window))
-        (file (todotxt-get-project-file
+  (let ((file (todotxt-get-project-file
                (completing-read "Todo.txt: " (todotxt-get-todo-projects)))))
-    (if (equal 'todotxt-mode
-               (with-current-buffer (window-buffer win)
-                 major-mode))
-        (set-window-buffer win (find-file-noselect file))
+    (if (equal major-mode 'todotxt-mode)
+        (progn
+          (save-window-excursion
+            (delete-other-windows)
+            (todotxt-open file))
+          (switch-to-buffer (find-file-noselect file)))
       (todotxt-open file))))
 
 ;;;###autoload
