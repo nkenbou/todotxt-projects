@@ -68,33 +68,62 @@
 ;;;###autoload
 (defun todotxt-transpose-line-up ()
   (interactive)
-  (setq inhibit-read-only 't)
-  (if (and (not (= (point-min) (point-at-bol)))
+  (todotxt-find-next-visible-char)
+  (let* ((current-line-number (line-number-at-pos))
+         (current-line-string (todotxt-get-current-line-as-string))
+         (dest-line-number (save-excursion
+                             (line-move-visual -1 t)
+                             (todotxt-find-next-visible-char)
+                             (line-number-at-pos)))
+         (range (- dest-line-number current-line-number))
+         (dest-line-string (buffer-substring (point-at-bol (1+ range)) (point-at-eol (1+ range)))))
+    (when (and
+           (not (zerop range))
+           (not (equal current-line-string ""))
+           (not (equal dest-line-string ""))
            (equal
-            (todotxt-sort-key-for-string (todotxt-get-current-line-as-string))
-            (todotxt-sort-key-for-string (buffer-substring (point-at-bol 0) (point-at-eol 0)))))
-      (progn
-        (beginning-of-line)
-        (save-excursion
-          (transpose-lines 1))
-        (forward-line -1)))
-  (setq inhibit-read-only 'nil))
+            (todotxt-sort-key-for-string current-line-string)
+            (todotxt-sort-key-for-string dest-line-string)))
+      (beginning-of-line)
+      (save-excursion
+        (remove-overlays)
+        (forward-line)
+        (setq inhibit-read-only 't)
+        (transpose-lines range)
+        (setq inhibit-read-only 'nil)
+        (todotxt-apply-active-filters))
+      (todotxt-find-next-visible-char)
+      (forward-line -1))))
 
 ;;;###autoload
 (defun todotxt-transpose-line-down ()
   (interactive)
-  (setq inhibit-read-only 't)
-  (if (and (not (= (point-max) (point-at-eol 2)))
+  (todotxt-find-next-visible-char)
+  (let* ((current-line-number (line-number-at-pos))
+         (current-line-string (todotxt-get-current-line-as-string))
+         (dest-line-number (save-excursion
+                             (line-move-visual 1 t)
+                             (todotxt-find-next-visible-char)
+                             (line-number-at-pos)))
+         (range (- dest-line-number current-line-number))
+         (dest-line-string (buffer-substring (point-at-bol (1+ range)) (point-at-eol (1+ range)))))
+    (when (and
+           (not (zerop range))
+           (not (equal current-line-string ""))
+           (not (equal dest-line-string ""))
            (equal
-            (todotxt-sort-key-for-string (todotxt-get-current-line-as-string))
-            (todotxt-sort-key-for-string (buffer-substring (point-at-bol 2) (point-at-eol 2)))))
-      (progn
-        (beginning-of-line)
-        (save-excursion
-          (forward-line)
-          (transpose-lines 1))
-        (forward-line)))
-  (setq inhibit-read-only 'nil))
+            (todotxt-sort-key-for-string current-line-string)
+            (todotxt-sort-key-for-string dest-line-string)))
+      (beginning-of-line)
+      (save-excursion
+        (remove-overlays)
+        (forward-line)
+        (setq inhibit-read-only 't)
+        (transpose-lines range)
+        (setq inhibit-read-only 'nil)
+        (todotxt-apply-active-filters))
+      (todotxt-find-next-visible-char)
+      (forward-line))))
 
 (defun todotxt-get-current-todo-project ()
   (file-name-base (directory-file-name (file-name-directory (buffer-file-name)))))
