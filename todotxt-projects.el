@@ -66,7 +66,7 @@
       (todotxt-open file))))
 
 ;;;###autoload
-(defun todotxt-transpose-line-up ()
+(defun todotxt-transpose-lines-up ()
   (interactive)
   (todotxt-find-next-visible-char)
   (let* ((current-line-number (line-number-at-pos))
@@ -96,7 +96,7 @@
       (forward-line -1))))
 
 ;;;###autoload
-(defun todotxt-transpose-line-down ()
+(defun todotxt-transpose-lines-down ()
   (interactive)
   (todotxt-find-next-visible-char)
   (let* ((current-line-number (line-number-at-pos))

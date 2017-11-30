@@ -17,14 +17,14 @@
         (should (equal "/todo/foo/todo.txt" (todotxt-get-project-file "foo")))
       (setq todotxt-location location))))
 
-(ert-deftest test-todotxt-transpose-line-up-at-top ()
+(ert-deftest test-todotxt-transpose-lines-up-at-top ()
   (with-temp-buffer
     (insert "abc
 def
 ghi
 ")
     (goto-char (point-min))
-    (todotxt-transpose-line-up)
+    (todotxt-transpose-lines-up)
     (should (equal "abc
 def
 ghi
@@ -33,7 +33,7 @@ ghi
     (should (equal nil (char-before)))
     (should (equal ?a (char-after)))))
 
-(ert-deftest test-todotxt-transpose-line-up-without-priority ()
+(ert-deftest test-todotxt-transpose-lines-up-without-priority ()
   (with-temp-buffer
     (insert "abc
 def
@@ -42,7 +42,7 @@ ghi
     (goto-char (point-min))
     (forward-line)
     (forward-char)
-    (todotxt-transpose-line-up)
+    (todotxt-transpose-lines-up)
     (should (equal "def
 abc
 ghi
@@ -51,7 +51,7 @@ ghi
     (should (equal nil (char-before)))
     (should (equal ?d (char-after)))))
 
-(ert-deftest test-todotxt-transpose-line-up-with-higher-priority ()
+(ert-deftest test-todotxt-transpose-lines-up-with-higher-priority ()
   (with-temp-buffer
     (insert "(A) abc
 def
@@ -60,7 +60,7 @@ ghi
     (goto-char (point-min))
     (forward-line)
     (forward-char)
-    (todotxt-transpose-line-up)
+    (todotxt-transpose-lines-up)
     (should (equal "(A) abc
 def
 ghi
@@ -69,7 +69,7 @@ ghi
     (should (equal ?d (char-before)))
     (should (equal ?e (char-after)))))
 
-(ert-deftest test-todotxt-transpose-line-up-with-same-priority ()
+(ert-deftest test-todotxt-transpose-lines-up-with-same-priority ()
   (with-temp-buffer
     (insert "(A) abc
 (A) def
@@ -78,7 +78,7 @@ ghi
     (goto-char (point-min))
     (forward-line)
     (forward-char)
-    (todotxt-transpose-line-up)
+    (todotxt-transpose-lines-up)
     (should (equal "(A) def
 (A) abc
 ghi
@@ -87,14 +87,14 @@ ghi
     (should (equal nil (char-before)))
     (should (equal ?\( (char-after)))))
 
-(ert-deftest test-todotxt-transpose-line-down-at-bottom ()
+(ert-deftest test-todotxt-transpose-lines-down-at-bottom ()
   (with-temp-buffer
     (insert "abc
 def
 ghi
 ")
     (goto-char (point-max))
-    (todotxt-transpose-line-down)
+    (todotxt-transpose-lines-down)
     (should (equal "abc
 def
 ghi
@@ -103,7 +103,7 @@ ghi
     (should (equal ?\C-j (char-before)))
     (should (equal nil (char-after)))))
 
-(ert-deftest test-todotxt-transpose-line-down-without-priority ()
+(ert-deftest test-todotxt-transpose-lines-down-without-priority ()
   (with-temp-buffer
     (insert "abc
 def
@@ -112,7 +112,7 @@ ghi
     (goto-char (point-min))
     (forward-line)
     (forward-char)
-    (todotxt-transpose-line-down)
+    (todotxt-transpose-lines-down)
     (should (equal "abc
 ghi
 def
@@ -121,7 +121,7 @@ def
     (should (equal ?\C-j (char-before)))
     (should (equal ?d (char-after)))))
 
-(ert-deftest test-todotxt-transpose-line-down-with-higher-priority ()
+(ert-deftest test-todotxt-transpose-lines-down-with-higher-priority ()
   (with-temp-buffer
     (insert "abc
 def
@@ -130,7 +130,7 @@ def
     (goto-char (point-min))
     (forward-line)
     (forward-char)
-    (todotxt-transpose-line-down)
+    (todotxt-transpose-lines-down)
     (should (equal "abc
 def
 (A) ghi
@@ -139,7 +139,7 @@ def
     (should (equal ?d (char-before)))
     (should (equal ?e (char-after)))))
 
-(ert-deftest test-todotxt-transpose-line-down-with-same-priority ()
+(ert-deftest test-todotxt-transpose-lines-down-with-same-priority ()
   (with-temp-buffer
     (insert "abc
 (A) def
@@ -148,7 +148,7 @@ def
     (goto-char (point-min))
     (forward-line)
     (forward-char)
-    (todotxt-transpose-line-down)
+    (todotxt-transpose-lines-down)
     (should (equal "abc
 (A) ghi
 (A) def
