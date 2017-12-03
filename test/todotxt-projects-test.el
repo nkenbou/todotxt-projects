@@ -87,6 +87,26 @@ ghi
     (should (equal nil (char-before)))
     (should (equal ?\( (char-after)))))
 
+(ert-deftest test-todotxt-transpose-lines-up-in-filterd-buffer ()
+  (with-temp-buffer
+    (insert "abc +a
+def
+ghi +a
+")
+    (todotxt-filter (eval `(lambda () (not (todotxt-current-line-match "+a")))))
+    (todotxt-apply-active-filters)
+    (goto-char (point-min))
+    (forward-line)
+    (todotxt-transpose-lines-up)
+    (todotxt-unhide-all)
+    (should (equal "ghi +a
+abc +a
+def
+"
+                   (buffer-string)))
+    (should (equal nil (char-before)))
+    (should (equal ?g (char-after)))))
+
 (ert-deftest test-todotxt-transpose-lines-down-at-bottom ()
   (with-temp-buffer
     (insert "abc
@@ -156,6 +176,25 @@ def
                    (buffer-string)))
     (should (equal ?\C-j (char-before)))
     (should (equal ?\( (char-after)))))
+
+(ert-deftest test-todotxt-transpose-lines-down-in-filterd-buffer ()
+  (with-temp-buffer
+    (insert "abc +a
+def
+ghi +a
+")
+    (todotxt-filter (eval `(lambda () (not (todotxt-current-line-match "+a")))))
+    (todotxt-apply-active-filters)
+    (goto-char (point-min))
+    (todotxt-transpose-lines-down)
+    (todotxt-unhide-all)
+    (should (equal "def
+ghi +a
+abc +a
+"
+                   (buffer-string)))
+    (should (equal ?\C-j (char-before)))
+    (should (equal ?a (char-after)))))
 
 (ert-deftest test-todotxt-get-current-todo-project ()
   (let ((ad (lambda (&optional buffer) "/foo/bar/todo.txt")))
