@@ -36,10 +36,11 @@
 (defvar todotxt-location "~/todo")
 (defvar todotxt-default-project "todo")
 
+(add-hook 'todotxt-mode-hook (lambda () (setq-local todotxt-file buffer-file-name)))
+
 (defun todotxt-open (file)
   (let ((todotxt-file file))
-    (todotxt)
-    (setq-local todotxt-file file)))
+    (todotxt)))
 
 (defun todotxt-get-todo-projects ()
   (cons todotxt-default-project
